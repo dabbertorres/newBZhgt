@@ -3,55 +3,55 @@
 #include <vector>
 #include <fstream>
 
+#include <SFML/Graphics/Image.hpp>
+
 typedef unsigned char byte;
 typedef unsigned short word;
 
-struct bitmapHeader
-{
-	word type;
-	word lof;
-	word lof2;
-	word x_hot;
-	word y_hot;
-	word first_pixel;
-	word first_pixel2;
-	word header_size;
-	word header_size2;
-	word x_size;             
-	word x_size2;
-	word y_size;
-	word y_size2;
-	word target;
-	word bits_per_pixel;      
-	word compression_method;
-	word compression_method2;
-	word compressed_size;
-	word compressed_size2;
-	word x_res;              
-	word x_res2;
-	word y_res;
-	word y_res2;
-	word used_clrs;
-	word used_clrs2;         
-	word important_clrs;
-	word important_clrs2; // 54 bytes
-} bitmap;
+bool saveHGT(const std::string& file, unsigned hm);
 
-struct tga_header
+int main(int argc, char** argv)
 {
-   int shite;
-   int shit1;
-   int shit2;
-   word xs;
-   word ys;
-   byte bpp;
-   byte magic;
-} tga;
+	if(argc != 2 || argc == 3)
+	{
+		std::cout << "Incorrect # of args, must be 1 (image filename)\n";
+		return 1;
+	}
+	
+	std::string file = argv[1];
+	std::string fileName = file.substr(0, file.find_last_of('.'));
+	std::string fileExt = file.substr(file.find_last_of('.') + 1);
+	
+	// if second arg is given, it is the heightMod, otherwise, make it 0
+	unsigned heightMod = argv[2] ? std::stoi(argv[2]) : 0;
+	
+	if(!(fileExt == "bmp" || fileExt == "png" || fileExt == "tga" || fileExt == "jpg" || fileExt == "gif" || fileExt == "psd" || fileExt == "hdr" || fileExt == "pic"))
+	{
+		std::cout << "Unsupported image type: " << fileExt << '\n';
+		return 2;
+	}
+	
+	sf::Image image;
+	image.loadFromFile(file);
+	
+	bool result = saveHGT(fileName + ".hgt", heightMod);
+	
+	if(result)
+		std::cout << "HGT successfully created as " << fileName << ".hgt!\n";
+	else
+	{
+		std::cout << "Failed creating HGT.\n";
+		return 3;
+	}
+	
+	return 0;
+}
 
-bool loadTGA24(const std::string& file)
+bool saveHGT(const std::string& file, unsigned hm)
 {
-	std::ifstream fin;
-	fin.open(file, std::ifstream::binary);
+	std::ofstream fout;
 	
+	fout.open(file, std::ofstream::binary);
 	
+	return true;
 }
